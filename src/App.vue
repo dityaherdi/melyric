@@ -1,32 +1,132 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <div class="uk-light wrap uk-background-norepeat uk-background-cover uk-background-center-center uk-cover-container uk-background-secondary">
+      <div class="uk-flex uk-flex-center uk-flex-middle uk-height-viewport uk-position-z-index uk-position-relative" data-uk-height-viewport="min-height: 400">
+
+			<!-- NAV -->
+			<div class="uk-position-top" uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
+				<div class="uk-container uk-container-small">
+					<nav class="uk-navbar-container uk-navbar-transparent" uk-navbar data-uk-navbar>
+						<div class="uk-navbar-left">
+							<div class="uk-navbar-item">
+								<a class="uk-logo" href=""><img src="img/cover-logo.svg" alt="Logo"></a>
+							</div>
+						</div>
+						<div class="uk-navbar-right">
+							<ul class="uk-navbar-nav">
+								<li class="uk-active uk-visible@m"><a href="" data-uk-icon="home"></a></li>
+								<li class="uk-visible@s"><a href="">Features</a></li>
+								<li class="uk-visible@s"><a href="">Security</a></li>
+								<li class="uk-visible@s"><a href="">Testimonials</a></li>
+								<li><a class="uk-navbar-toggle" data-uk-toggle data-uk-navbar-toggle-icon href="#offcanvas-nav"></a></li>
+							</ul>
+						</div>
+					</nav>
+				</div>
+			</div>
+			<!-- /NAV -->
+
+			<!-- CONTENT -->
+			<div class="uk-container uk-container-small uk-flex-auto uk-text-center" data-uk-scrollspy="target: > .animate; cls: uk-animation-slide-bottom-small uk-invisible; delay: 300">
+				<h1 class="uk-heading-primary animate uk-invisible" style="font-weight: 700;">Find The Lyrics.</h1>
+				<div class="uk-width-4-5@m uk-margin-auto animate uk-invisible">
+          <form @submit.prevent="find">
+            <fieldset class="uk-fieldset">
+                <div class="uk-margin">
+                    <input class="uk-input" v-model="artist" style="text-align: center;" type="text" placeholder="Artist">
+                </div>
+                <div class="uk-margin">
+                    <input class="uk-input" v-model="title" style="text-align: center;" type="text" placeholder="Song's Title">
+                </div>
+                <button class="uk-button uk-button-primary" @click.prevent="find">Primary</button>
+            </fieldset>
+          </form>
+          <article class="uk-article" v-if="lyric !== null">
+            <h1 class="uk-article-title"><a class="uk-link-reset" href="">{{ title }}</a></h1>
+            <div v-html="lyric" style="white-space:pre-wrap;"></div>
+          </article>
+				</div>
+			</div>
+			</div>
+			<!-- /CONTENT -->
+
+			<!-- FOOT -->
+			<div class="uk-position-bottom-center uk-position-small">
+				<span class="uk-text-small uk-text-center">© 2019 | <a href="https://github.com/zzseba78/Kick-Off" title="Created by KickOff">Created by KickOff</a> | Built with <a href="http://getuikit.com" title="Visit UIkit 3 site" target="_blank" data-uk-tooltip><span data-uk-icon="uikit"></span></a></span>
+			</div>
+			<!-- /FOOT -->
+		</div>
+		<!-- OFFCANVAS -->
+		<div id="offcanvas-nav" data-uk-offcanvas="flip: true; overlay: false">
+			<div class="uk-offcanvas-bar uk-offcanvas-bar-animation uk-offcanvas-slide">
+				<button class="uk-offcanvas-close uk-close uk-icon" type="button" data-uk-close></button>
+				<ul class="uk-nav uk-nav-default">
+					<li class="uk-active"><a href="#">Active</a></li>
+					<li class="uk-parent">
+						<a href="#">Parent</a>
+						<ul class="uk-nav-sub">
+							<li><a href="#">Sub item</a></li>
+							<li><a href="#">Sub item</a></li>
+						</ul>
+					</li>
+					<li class="uk-nav-header">Header</li>
+					<li><a href="#js-options"><span class="uk-margin-small-right uk-icon" data-uk-icon="icon: table"></span> Item</a></li>
+					<li><a href="#"><span class="uk-margin-small-right uk-icon" data-uk-icon="icon: thumbnails"></span> Item</a></li>
+					<li class="uk-nav-divider"></li>
+					<li><a href="#"><span class="uk-margin-small-right uk-icon" data-uk-icon="icon: trash"></span> Item</a></li>
+				</ul>
+				<h3>Title</h3>
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+			</div>
+		</div>
+		<!-- /OFFCANVAS -->
     </div>
-    <router-view/>
   </div>
 </template>
 
-<style lang="less">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import lyric from 'lyric-get'
+import axios from 'axios'
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+export default {
+  data: function () {
+    return {
+      lyric: null,
+      artist: null,
+      title: null
+    }
+  },
+  methods: {
+    find: async function () {
+      try {
+        const response = await axios.get(`https://lyric-api.herokuapp.com/api/find/${ this.artist }/${ this.title }`)
+        const { status, data: { lyric } } = response
+        if (status === 200) {
+          this.lyric = lyric
+          console.log(this.lyric)
+        }
+      } catch (error) {
+        console.log(error) 
+      }
     }
   }
+}
+</script>
+
+<style lang="less" scoped>
+.wrap::before {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    content: '';
+    z-index: 1;
+    background-color: rgba(0,0,0,0.5);
+}
+.lead {
+    font-size: 1.175em;
+    font-weight: 300;
+}
+.uk-logo img {
+    height: 28px;
 }
 </style>
