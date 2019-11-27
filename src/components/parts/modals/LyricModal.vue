@@ -64,15 +64,15 @@ export default {
             this.stopAutoScroll()
             UIkit.modal('#modal-full').hide();
         },
-        startAutoScroll() {
+        startAutoScroll: function () {
             this.scroll = setInterval(() => {
-                document.getElementById('lyricArea').scrollBy(0, 10)
+                document.getElementById('lyricArea').scrollBy({ top: 10, left: 0, behavior: 'smooth' })
             }, 1000)
         },
-        stopAutoScroll() {
+        stopAutoScroll: function () {
             clearInterval(this.scroll)
         },
-        scrollActiveSwitcher() {
+        scrollActiveSwitcher: function () {
             return this.scrollActive = !this.scrollActive
         }
     }

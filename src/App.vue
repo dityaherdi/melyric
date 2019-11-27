@@ -10,18 +10,15 @@
 			<div class="uk-container uk-container-small uk-flex-auto uk-text-center" data-uk-scrollspy="target: > .animate; cls: uk-animation-slide-bottom-small uk-invisible; delay: 300">
 				<h1 class="uk-heading-primary animate uk-invisible" style="font-weight: 700;">Find The Lyrics.</h1>
 				<div class="uk-width-4-5@m uk-margin-auto animate uk-invisible">
-          <!-- <form @submit.prevent="find"> -->
-            <fieldset class="uk-fieldset">
-                <div class="uk-margin">
-                    <input class="uk-input" required v-model="artist" style="text-align: center;" type="text" placeholder="Artist">
-                </div>
-                <div class="uk-margin">
-                    <input class="uk-input" required v-model="title" style="text-align: center;" type="text" placeholder="Song's Title">
-                </div>
-                <button class="uk-button uk-button-primary" @click.prevent="find">Primary</button>
-            </fieldset>
-          <!-- </form> -->
-          <!-- <a class="uk-button uk-button-default" href="javascript:void(0)" @click="showLyricModal">Open</a> -->
+          <fieldset class="uk-fieldset">
+              <div class="uk-margin">
+                  <input class="uk-input" required v-model="artist" style="text-align: center;" type="text" placeholder="Artist">
+              </div>
+              <div class="uk-margin">
+                  <input class="uk-input" required v-model="title" style="text-align: center;" type="text" placeholder="Song's Title">
+              </div>
+              <button class="uk-button uk-button-primary" @click.prevent="find">Primary</button>
+          </fieldset>
 				</div>
 			</div>
 			</div>
@@ -44,7 +41,6 @@ import Event from './helpers/event'
 export default {
   data: function () {
     return {
-      // lyric: null,
       artist: null,
       title: null
     }
@@ -61,8 +57,6 @@ export default {
         const response = await axios.get(`https://lyric-api.herokuapp.com/api/find/${ this.artist }/${ this.title }`)
         const { status, data: { lyric, err } } = response
         if (err === 'none') {
-          // this.lyric = null
-          // this.lyric = lyric
           Event.$emit('show:LyricModal', lyric)
         } else {
           console.log('lyrics not found')
@@ -70,10 +64,7 @@ export default {
       } catch (error) {
         console.log(error) 
       }
-    },
-    // showLyricModal: function () {
-    //   Event.$emit('show:LyricModal', this.lyric)
-    // }
+    }
   }
 }
 </script>
