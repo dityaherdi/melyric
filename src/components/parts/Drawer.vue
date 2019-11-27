@@ -1,6 +1,6 @@
 <template>
 <!-- OFFCANVAS -->
-<div id="offcanvas-nav" data-uk-offcanvas="flip: true; overlay: true">
+<div id="offcanvas-nav" data-uk-offcanvas="flip: true; overlay: false">
     <div class="uk-offcanvas-bar uk-offcanvas-bar-animation uk-offcanvas-slide">
         <button class="uk-offcanvas-close uk-close uk-icon" type="button" data-uk-close></button>
         <ul class="uk-nav uk-nav-default">
