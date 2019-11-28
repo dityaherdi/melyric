@@ -21,7 +21,7 @@
                         <h1 class="uk-article-title"><a class="uk-link-reset" href="">Heading</a></h1>
                         <p class="uk-article-meta">Song by <a href="#">Artist</a> in 2012.</p>
                         <div class="overflow-area" id="lyricArea" uk-overflow-auto>
-                        <p class="lyric-overflow">{{ lyric === null ? '' : lyric }}</p>
+                            <p class="lyric-overflow">{{ lyric === null ? '' : lyric }}</p>
                         </div>
                     </article>
                 </div>
@@ -50,7 +50,10 @@ export default {
     created() {
         Event.$on('show:LyricModal', (lyric) => {
             this.lyric = lyric
-            UIkit.modal('#modal-full').show();
+            const element = document.getElementById('modal-full')
+            if (element) {
+                UIkit.modal('#modal-full').show();
+            }
         })
     },
     watch: {
@@ -79,11 +82,11 @@ export default {
     methods: {
         hideLyricModal: function () {
             this.lyric = null
-            this.stopAutoScroll()
+            this.pauseAutoScroll()
             UIkit.modal('#modal-full').hide();
         },
         startAutoScroll: function () {
-            this.stopAutoScroll()
+            this.pauseAutoScroll()
             this.scroll = setInterval(() => {
                 const element = document.getElementById('lyricArea')
                 if (element) {
@@ -92,6 +95,9 @@ export default {
                     return false
                 }
             }, this.scrollTime)
+        },
+        pauseAutoScroll: function () {
+            clearInterval(this.scroll)
         },
         stopAutoScroll: function () {
             this.scrollTime = 2000
@@ -109,7 +115,7 @@ export default {
             }
         },
         decreaseScrollSpeed: function () {
-            if (this.scrollTime <= 4000) {
+            if (this.scrollTime <= 4000 && this.scrollTime > 0) {
                 this.startAutoScroll()
                 this.scrollTime += 250
             } else {
