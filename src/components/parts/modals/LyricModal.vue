@@ -37,17 +37,25 @@ import Event from './../../../helpers/event'
 import UIkit from 'uikit'
 
 export default {
-  name: 'LyricModal',
-  data: function () {
-        return {
-            lyric: null,
-            scroll: null,
-            scrollActive: false,
-            scrollDistance: 25,
-            scrollTime: 2000
-        }
-    },
+    name: 'LyricModal',
+    data: function () {
+            return {
+                lyric: null,
+                scroll: null,
+                scrollActive: false,
+                scrollDistance: 25,
+                scrollTime: 2000
+            }
+        },
     created() {
+        history.pushState(null, null, location.href)
+        window.onpopstate = function () {
+            const element = document.getElementById('modal-full')
+            if (element) {
+                UIkit.modal('#modal-full').hide();
+            }
+        }
+
         Event.$on('show:LyricModal', (lyric) => {
             this.lyric = lyric
             const element = document.getElementById('modal-full')
