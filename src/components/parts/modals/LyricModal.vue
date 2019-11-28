@@ -2,7 +2,7 @@
     <!-- Modal -->
     <div id="modal-full" class="uk-modal-full" uk-modal>
         <div class="uk-modal-dialog">
-          <button class="uk-modal-close-full uk-close-large" type="button" uk-close></button>
+          <button class="uk-modal-close-full uk-close-large" type="button" uk-close @click="hideModal"></button>
           <div class="uk-light uk-background-norepeat uk-background-center-center uk-background-secondary">
             <div class="uk-grid-collapse uk-child-width-1-2@s uk-flex uk-flex-center" uk-grid>
                 <div class="uk-padding-large">
@@ -119,7 +119,7 @@ export default {
                 this.startAutoScroll()
                 this.scrollTime -= 250
             } else {
-                console.log('already at +8x speed')
+                UIkit.notification("Speed reached maximum limit", {status:'warning'})
             }
         },
         decreaseScrollSpeed: function () {
@@ -127,8 +127,13 @@ export default {
                 this.startAutoScroll()
                 this.scrollTime += 250
             } else {
-                console.log('already at -8 speed')
+                UIkit.notification("Speed reached minimum limit", {status:'warning'})
             }
+        },
+        hideModal: function () {
+            this.scroll = null
+            this.stopAutoScroll()
+            UIkit.modal('#modal-full').hide();
         }
     }
 }
@@ -136,7 +141,7 @@ export default {
 
 <style scoped lang="less">
 .overflow-area {
-    min-height: 50vh !important;
+    min-height: 65vh !important;
 }
 .lyric-overflow {
     white-space: pre-wrap;
