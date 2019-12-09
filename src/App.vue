@@ -17,7 +17,7 @@
               <div class="uk-margin">
                   <input class="uk-input" required v-model="title" style="text-align: center;" type="text" placeholder="Song's Title">
               </div>
-              <button class="uk-button uk-button-primary" @click.prevent="find">Primary</button>
+              <button class="uk-button uk-button-primary uk-width-1-1" @click.prevent="find">Find</button>
           </fieldset>
 				</div>
 			</div>
