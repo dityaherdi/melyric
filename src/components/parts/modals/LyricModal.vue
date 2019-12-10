@@ -5,25 +5,35 @@
           <button class="uk-modal-close-full uk-close-large" type="button" uk-close @click="hideModal"></button>
           <div class="uk-light uk-background-norepeat uk-background-center-center uk-background-secondary">
             <div class="uk-grid-collapse uk-child-width-1-2@s uk-flex uk-flex-center" uk-grid>
-                <div class="uk-padding-large">
-                    <img uk-img src="https://i.scdn.co/image/07c323340e03e25a8e5dd5b9a8ec72b69c50089d" alt="No Picture Available">
+                <div class="uk-padding uk-padding-remove-bottom">
+                    <img uk-img src="https://i.scdn.co/image/07c323340e03e25a8e5dd5b9a8ec72b69c50089d" alt="No Album Cover Available">
+                    <hr uk-divider>
                 </div>
                 <div class="uk-padding">
-                    <p class="uk-article-meta uk-margin-remove-bottom">Autoscroll {{ scrollRange }}</p>
-                    <ul class="uk-iconnav">
+                    
+                    <article class="uk-article">
+                        <h5 class="make-center-align">I Still Haven't Found What I'm Looking For</h5>
+                        <p class="make-center-align uk-article-meta">Song by <a href="javascript:void(0)">Artist</a> in 2012.</p>
+                        <div class="overflow-area" id="lyricArea" uk-overflow-auto>
+                            <p class="lyric-overflow">{{ lyric === null ? '' : lyric }}</p>
+                        </div>
+                    </article>
+                    <!-- <ul class="uk-iconnav">
                         <li><a href="javascript:void(0)" @click="scrollActiveSwitcher" :uk-icon="scrollActive ? 'icon: ban' : 'icon: play-circle'"></a></li>
                         <template v-if="scrollActive">
                             <li><a href="javascript:void(0)" @click="increaseScrollSpeed" uk-icon="icon: plus-circle"></a></li>
                             <li><a href="javascript:void(0)" @click="decreaseScrollSpeed" uk-icon="icon: minus-circle"></a></li>
                         </template>
-                    </ul>
-                    <article class="uk-article">
-                        <h1 class="uk-article-title"><a class="uk-link-reset" href="">Heading</a></h1>
-                        <p class="uk-article-meta">Song by <a href="#">Artist</a> in 2012.</p>
-                        <div class="overflow-area" id="lyricArea" uk-overflow-auto>
-                            <p class="lyric-overflow">{{ lyric === null ? '' : lyric }}</p>
-                        </div>
-                    </article>
+                    </ul> -->
+                    <!-- <hr uk-divider> -->
+                    <p class="make-center-align uk-article-meta uk-margin-remove-bottom">Autoscroll {{ scrollRange }}</p>
+                    <div class="uk-flex uk-flex-center make-center-align">
+                            <a href="javascript:void(0)" @click="scrollActiveSwitcher" :uk-icon="scrollActive ? 'ban' : 'play-circle'"></a>
+                            <template v-if="scrollActive">
+                                <a href="javascript:void(0)" class="uk-margin-small-left" @click="increaseScrollSpeed" uk-icon="icon: plus-circle"></a>
+                                <a href="javascript:void(0)" class="uk-margin-small-left" @click="decreaseScrollSpeed" uk-icon="icon: minus-circle"></a>
+                            </template>
+                    </div>
                 </div>
             </div>
           </div>
@@ -79,9 +89,9 @@ export default {
             let times = (this.scrollTime / counter) - 8
             if (times < 0) {
                 let displayNumber = Math.abs(times)
-                return `+${displayNumber}x`
+                return `(speed +${displayNumber}x)`
             } else if (times > 0) {
-                return `-${times}x`
+                return `(speed -${times}x)`
             } else {
                 return ''
             }
@@ -146,5 +156,8 @@ export default {
 .lyric-overflow {
     white-space: pre-wrap;
     text-align: center;
+}
+.make-center-align {
+    text-align: center !important;
 }
 </style>

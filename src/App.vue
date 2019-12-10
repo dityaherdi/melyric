@@ -15,9 +15,9 @@
                   <input class="uk-input" required v-model="artist" style="text-align: center;" type="text" placeholder="Artist">
               </div>
               <div class="uk-margin">
-                  <input class="uk-input" required v-model="title" style="text-align: center;" type="text" placeholder="Song's Title">
+                  <input @keyup.enter="find" class="uk-input" required v-model="title" style="text-align: center;" type="text" placeholder="Song's Title">
               </div>
-              <button class="uk-button uk-button-primary uk-width-1-1" @click.prevent="find">Find</button>
+              <button class="uk-button uk-button-primary uk-width-1-1" @click.prevent="find">Find Lyrics</button>
           </fieldset>
 				</div>
 			</div>
@@ -30,6 +30,7 @@
 		
     <Drawer />
     <LyricModal />
+    <Loading :active.sync="isLoading" :is-full-page="true" color="hsl(171, 100%, 41%)" loader="dots"/>
   </div>
 </template>
 
@@ -37,33 +38,42 @@
 import lyric from 'lyric-get'
 import axios from 'axios'
 import Event from './helpers/event'
+import Loading from 'vue-loading-overlay'
 
 export default {
   data: function () {
     return {
       artist: null,
-      title: null
+      title: null,
+      isLoading: false
     }
   },
   components: {
     AppNavbar: () => import('./components/parts/Navbar'),
     AppFooter: () => import('./components/parts/Footer'),
     LyricModal: () => import('./components/parts/modals/LyricModal'),
-    Drawer: () => import('./components/parts/Drawer')
+    Drawer: () => import('./components/parts/Drawer'),
+    Loading
   },
   methods: {
     find: async function () {
+      this.loadingHandler()
       try {
         const response = await axios.get(`https://lyric-api.herokuapp.com/api/find/${ this.artist }/${ this.title }`)
         const { status, data: { lyric, err } } = response
         if (err === 'none') {
           Event.$emit('show:LyricModal', lyric)
+          this.loadingHandler()
         } else {
-          console.log('lyrics not found')
+          alert('lyrics not found')
+          this.loadingHandler()
         }
       } catch (error) {
-        console.log(error) 
+        alert(error) 
       }
+    },
+    loadingHandler: function () {
+      this.isLoading = !this.isLoading
     }
   }
 }
