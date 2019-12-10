@@ -10,21 +10,42 @@
                     <hr uk-divider>
                 </div>
                 <div class="uk-padding">
-                    
                     <article class="uk-article">
                         <h5 class="make-center-align">I Still Haven't Found What I'm Looking For</h5>
                         <p class="make-center-align uk-article-meta">Song by <a href="javascript:void(0)">Artist</a> in 2012.</p>
+                        <hr uk-divider class="uk-margin-remove">
                         <div class="overflow-area" id="lyricArea" uk-overflow-auto>
                             <p class="lyric-overflow">{{ lyric === null ? '' : lyric }}</p>
                         </div>
                     </article>
+                    <hr uk-divider class="uk-margin-remove">
                     <p class="make-center-align uk-article-meta uk-margin-remove-bottom">Autoscroll {{ scrollRange }}</p>
-                    <div class="uk-flex uk-flex-center make-center-align">
-                            <a href="javascript:void(0)" @click="scrollActiveSwitcher" :uk-icon="scrollActive ? 'ban' : 'play-circle'"></a>
-                            <template v-if="scrollActive">
-                                <a href="javascript:void(0)" class="uk-margin-small-left" @click="increaseScrollSpeed" uk-icon="icon: plus-circle"></a>
-                                <a href="javascript:void(0)" class="uk-margin-small-left" @click="decreaseScrollSpeed" uk-icon="icon: minus-circle"></a>
-                            </template>
+                    <div class="uk-flex uk-flex-center make-center-align uk-margin-remove">
+                        <a href="javascript:void(0)"
+                            :uk-tooltip="scrollActive ? 'title: Stop Autoscroll' : 'title: Start Autoscroll'"
+                            @click="scrollActiveSwitcher"
+                            :uk-icon="scrollActive ? 'ban' : 'play-circle'"
+                        ></a>
+                        <template v-if="scrollActive">
+                            <a href="javascript:void(0)"
+                                class="uk-margin-small-left"
+                                @click="increaseScrollSpeed"
+                                uk-icon="icon: plus-circle"
+                                uk-tooltip="title: Increase Speed"
+                            ></a>
+                            <a href="javascript:void(0)"
+                                class="uk-margin-small-left"
+                                @click="decreaseScrollSpeed"
+                                uk-icon="icon: minus-circle"
+                                uk-tooltip="title: Decrease Speed"
+                            ></a>
+                            <a href="javascript:void(0)"
+                                class="uk-margin-small-left"
+                                @click="goToFirstLine"
+                                uk-icon="icon: push"
+                                uk-tooltip="title: Stop & Go To First Line"
+                            ></a>
+                        </template>
                     </div>
                 </div>
             </div>
@@ -131,6 +152,10 @@ export default {
             } else {
                 UIkit.notification("Speed reached minimum limit", {status:'warning'})
             }
+        },
+        goToFirstLine: function () {
+            this.scrollActiveSwitcher()
+            document.getElementById('lyricArea').scrollTop = 0
         },
         hideModal: function () {
             this.scroll = null
