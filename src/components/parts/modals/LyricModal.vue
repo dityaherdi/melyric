@@ -18,14 +18,6 @@
                             <p class="lyric-overflow">{{ lyric === null ? '' : lyric }}</p>
                         </div>
                     </article>
-                    <!-- <ul class="uk-iconnav">
-                        <li><a href="javascript:void(0)" @click="scrollActiveSwitcher" :uk-icon="scrollActive ? 'icon: ban' : 'icon: play-circle'"></a></li>
-                        <template v-if="scrollActive">
-                            <li><a href="javascript:void(0)" @click="increaseScrollSpeed" uk-icon="icon: plus-circle"></a></li>
-                            <li><a href="javascript:void(0)" @click="decreaseScrollSpeed" uk-icon="icon: minus-circle"></a></li>
-                        </template>
-                    </ul> -->
-                    <!-- <hr uk-divider> -->
                     <p class="make-center-align uk-article-meta uk-margin-remove-bottom">Autoscroll {{ scrollRange }}</p>
                     <div class="uk-flex uk-flex-center make-center-align">
                             <a href="javascript:void(0)" @click="scrollActiveSwitcher" :uk-icon="scrollActive ? 'ban' : 'play-circle'"></a>
@@ -70,7 +62,7 @@ export default {
             this.lyric = lyric
             const element = document.getElementById('modal-full')
             if (element) {
-                UIkit.modal('#modal-full').show();
+                UIkit.modal('#modal-full').show()
             }
         })
     },
