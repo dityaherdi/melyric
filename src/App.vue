@@ -19,6 +19,14 @@
               </div>
               <button class="uk-button uk-button-primary uk-width-1-1" @click.prevent="find">Find Lyrics</button>
           </fieldset>
+          <hr class="uk-divider-icon">
+          <div class="uk-padding-small">
+            <button @click="loginSpotify" class="uk-button uk-button-small spotify-button">
+              <img src="/img/logos/spotify.svg" width="20px" alt="">
+              Login with Spotify to get instant lyric.
+            </button>
+            <!-- <button @click="getCurrentPlayback">Get Current Playback</button> -->
+          </div>
 				</div>
 			</div>
 			</div>
@@ -45,7 +53,8 @@ export default {
     return {
       artist: null,
       title: null,
-      isLoading: false
+      isLoading: false,
+      me: null
     }
   },
   components: {
@@ -54,6 +63,9 @@ export default {
     LyricModal: () => import('./components/parts/modals/LyricModal'),
     Drawer: () => import('./components/parts/Drawer'),
     Loading
+  },
+  mounted() {
+    console.log(this.getHashParams())
   },
   methods: {
     find: async function () {
@@ -74,6 +86,21 @@ export default {
     },
     loadingHandler: function () {
       this.isLoading = !this.isLoading
+    },
+    loginSpotify: function () {
+      window.location = 'http://localhost:3000/api/spotify/login'
+    },
+    getCurrentPlayback: async function () {
+      alert('get current playback')
+    },
+    getHashParams: function () {
+      let hashParams = {};
+      let e, r = /([^&;=]+)=?([^&;]*)/g,
+          q = window.location.hash.substring(1);
+      while ( e = r.exec(q)) {
+          hashParams[e[1]] = decodeURIComponent(e[2]);
+      }
+      return hashParams;
     }
   }
 }
@@ -94,5 +121,9 @@ export default {
 }
 .uk-logo img {
     height: 28px;
+}
+.spotify-button {
+  background-color: #1db954;
+  color: #191414;
 }
 </style>
