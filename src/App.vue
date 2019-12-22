@@ -25,8 +25,8 @@
               <img src="/img/logos/spotify.svg" width="20px" alt="">
               Login with Spotify to get instant lyric.
             </button>
-            <!-- <button @click="getCurrentPlayback">Get Current Playback</button> -->
           </div>
+          <button @click="getCurrentPlayback">Get Current Playback</button>
 				</div>
 			</div>
 			</div>
@@ -47,6 +47,8 @@ import lyric from 'lyric-get'
 import axios from 'axios'
 import Event from './helpers/event'
 import Loading from 'vue-loading-overlay'
+import spotifyAPI from 'spotify-web-api-node'
+const spotify = new spotifyAPI()
 
 export default {
   data: function () {
@@ -54,7 +56,11 @@ export default {
       artist: null,
       title: null,
       isLoading: false,
-      me: null
+      me: null,
+      token: null,
+      albumCover: null,
+      albumName: null,
+      releaseDate: null
     }
   },
   components: {
@@ -65,7 +71,7 @@ export default {
     Loading
   },
   mounted() {
-    console.log(this.getHashParams())
+    this.token = this.getHashParams()
   },
   methods: {
     find: async function () {
@@ -73,8 +79,16 @@ export default {
       try {
         const response = await axios.get(`https://lyric-api.herokuapp.com/api/find/${ this.artist }/${ this.title }`)
         const { status, data: { lyric, err } } = response
+        const item = {
+          artist: this.artist,
+          title: this.title,
+          lyric,
+          albumCover: this.albumCover,
+          albumName: this.albumName,
+          releaseDate: this.releaseDate
+        }
         if (err === 'none') {
-          Event.$emit('show:LyricModal', lyric)
+          Event.$emit('show:LyricModal', item)
           this.loadingHandler()
         } else {
           alert('lyrics not found')
@@ -91,7 +105,18 @@ export default {
       window.location = 'http://localhost:3000/api/spotify/login'
     },
     getCurrentPlayback: async function () {
-      alert('get current playback')
+      spotify.setAccessToken(this.token.access_token)
+      try {
+        const response = await spotify.getMyCurrentPlaybackState()
+        this.artist = response.body.item.artists[0].name
+        this.title = response.body.item.name
+        this.albumCover = response.body.item.album.images[0].url
+        this.albumName = response.body.item.album.name
+        this.releaseDate = response.body.item.album.release_date
+        await this.find()
+      } catch (error) {
+        console.log(error)
+      }
     },
     getHashParams: function () {
       let hashParams = {};

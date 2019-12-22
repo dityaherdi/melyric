@@ -9,6 +9,8 @@ import './assets/styles/melyric-styles.less'
 import Icons from 'uikit/dist/js/uikit-icons'
 UIkit.use(Icons)
 
+import './helpers/filter'
+
 Vue.config.productionTip = false
 
 new Vue({

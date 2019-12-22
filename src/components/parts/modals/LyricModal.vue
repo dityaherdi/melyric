@@ -6,16 +6,16 @@
           <div class="uk-light uk-background-norepeat uk-background-center-center uk-background-secondary">
             <div class="uk-grid-collapse uk-child-width-1-2@s uk-flex uk-flex-center" uk-grid>
                 <div class="uk-padding uk-padding-remove-bottom">
-                    <img uk-img src="https://i.scdn.co/image/07c323340e03e25a8e5dd5b9a8ec72b69c50089d" alt="No Album Cover Available">
+                    <img uk-img :src="item.albumCover" alt="No Album Cover Available">
                     <hr uk-divider>
                 </div>
                 <div class="uk-padding">
                     <article class="uk-article">
-                        <h5 class="make-center-align">I Still Haven't Found What I'm Looking For</h5>
-                        <p class="make-center-align uk-article-meta">Song by <a href="javascript:void(0)">Artist</a> in 2012.</p>
+                        <h5 class="make-center-align">{{ item.title }}</h5>
+                        <p class="make-center-align uk-article-meta">Song by <a href="javascript:void(0)">{{ item.artist }}</a> in {{ item.releaseDate ? item.releaseDate : '' | yearOnly }}.</p>
                         <hr uk-divider class="uk-margin-remove">
                         <div class="overflow-area" id="lyricArea" uk-overflow-auto>
-                            <p class="lyric-overflow">{{ lyric === null ? '' : lyric }}</p>
+                            <p class="lyric-overflow">{{ item.lyric === null ? '' : item.lyric }}</p>
                         </div>
                     </article>
                     <hr uk-divider class="uk-margin-remove">
@@ -63,7 +63,7 @@ export default {
     name: 'LyricModal',
     data: function () {
             return {
-                lyric: null,
+                item: {},
                 scroll: null,
                 scrollActive: false,
                 scrollDistance: 25,
@@ -79,8 +79,9 @@ export default {
             }
         }
 
-        Event.$on('show:LyricModal', (lyric) => {
-            this.lyric = lyric
+        Event.$on('show:LyricModal', (item) => {
+            console.log(item)
+            this.item = item
             const element = document.getElementById('modal-full')
             if (element) {
                 UIkit.modal('#modal-full').show()
@@ -112,7 +113,7 @@ export default {
     },
     methods: {
         hideLyricModal: function () {
-            this.lyric = null
+            this.item = null
             this.pauseAutoScroll()
             UIkit.modal('#modal-full').hide();
         },
