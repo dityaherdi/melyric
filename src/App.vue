@@ -18,6 +18,8 @@
                   <input @keyup.enter="find" class="uk-input" required v-model="title" style="text-align: center;" type="text" placeholder="Song's Title">
               </div>
               <button class="uk-button uk-button-primary uk-width-1-1" @click.prevent="find">Find Lyrics</button>
+              <!-- <button class="uk-button uk-button-primary uk-width-1-1" @click.prevent="loginSpotify">Find Lyrics</button> -->
+              <a href="https://accounts.spotify.com/authorize?client_id=f6f84d308571418387258d028448a96c&response_type=code&redirect_uri=http://localhost:3000/callback&scope=user-read-private%20user-read-email%20user-read-playback-state&show_dialog=true" class="uk-button uk-button-primary uk-width-1-1">Login Spotify</a>
           </fieldset>
 				</div>
 			</div>
@@ -74,7 +76,12 @@ export default {
     },
     loadingHandler: function () {
       this.isLoading = !this.isLoading
-    }
+    },
+    // loginSpotify: function () {
+    //   window.href(
+        
+    //   )
+    // }
   }
 }
 </script>
