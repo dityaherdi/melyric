@@ -26,7 +26,7 @@
               Login with Spotify to get instant lyric.
             </button>
           </div>
-          <!-- <button @click="getCurrentPlayback">Get Current Playback</button> -->
+          <button @click="getCurrentPlaybackState">Get Current Playback</button>
 				</div>
 			</div>
 			</div>
@@ -56,10 +56,9 @@ const spotify = new spotifyAPI()
 export default {
   data: function () {
     return {
+      isLoading: false,
       artist: null,
       title: null,
-      isLoading: false,
-      me: null,
       albumCover: null,
       albumName: null,
       releaseDate: null
@@ -73,8 +72,9 @@ export default {
     Loading
   },
   mounted() {
+    window.close()
     const token = extractSpotifyToken()
-    if (token !== null) {
+    if (Object.entries(token).length !== 0) {
       if (window.opener !== null) {
         window.opener.spotifyCallback(token)
       }
@@ -82,7 +82,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'loginSpotify'
+      'loginSpotify', 'getCurrentPlaybackState'
     ]),
     find: async function () {
       this.loadingHandler()
@@ -111,7 +111,7 @@ export default {
     loadingHandler: function () {
       this.isLoading = !this.isLoading
     },
-    // getCurrentPlayback: async function () {
+    // getCurrentPlaybackState: async function () {
     //   spotify.setAccessToken(JSON.parse(localStorage.getItem('spotifyUserAccessToken')))
     //   try {
     //     const response = await spotify.getMyCurrentPlaybackState()
