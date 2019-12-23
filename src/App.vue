@@ -18,9 +18,15 @@
                   <input @keyup.enter="find" class="uk-input" required v-model="title" style="text-align: center;" type="text" placeholder="Song's Title">
               </div>
               <button class="uk-button uk-button-primary uk-width-1-1" @click.prevent="find">Find Lyrics</button>
-              <!-- <button class="uk-button uk-button-primary uk-width-1-1" @click.prevent="loginSpotify">Find Lyrics</button> -->
-              <a href="https://accounts.spotify.com/authorize?client_id=f6f84d308571418387258d028448a96c&response_type=code&redirect_uri=http://localhost:3000/callback&scope=user-read-private%20user-read-email%20user-read-playback-state&show_dialog=true" class="uk-button uk-button-primary uk-width-1-1">Login Spotify</a>
           </fieldset>
+          <hr class="uk-divider-icon">
+          <div class="uk-padding-small">
+            <button @click="loginSpotify" class="uk-button uk-button-small spotify-button">
+              <img src="/img/logos/spotify.svg" width="20px" alt="">
+              Login with Spotify to get instant lyric.
+            </button>
+          </div>
+          <button @click="getCurrentPlayback">Get Current Playback</button>
 				</div>
 			</div>
 			</div>
@@ -41,13 +47,20 @@ import lyric from 'lyric-get'
 import axios from 'axios'
 import Event from './helpers/event'
 import Loading from 'vue-loading-overlay'
+import spotifyAPI from 'spotify-web-api-node'
+const spotify = new spotifyAPI()
 
 export default {
   data: function () {
     return {
       artist: null,
       title: null,
-      isLoading: false
+      isLoading: false,
+      me: null,
+      token: null,
+      albumCover: null,
+      albumName: null,
+      releaseDate: null
     }
   },
   components: {
@@ -57,14 +70,25 @@ export default {
     Drawer: () => import('./components/parts/Drawer'),
     Loading
   },
+  mounted() {
+    this.token = this.getHashParams()
+  },
   methods: {
     find: async function () {
       this.loadingHandler()
       try {
         const response = await axios.get(`https://lyric-api.herokuapp.com/api/find/${ this.artist }/${ this.title }`)
         const { status, data: { lyric, err } } = response
+        const item = {
+          artist: this.artist,
+          title: this.title,
+          lyric,
+          albumCover: this.albumCover,
+          albumName: this.albumName,
+          releaseDate: this.releaseDate
+        }
         if (err === 'none') {
-          Event.$emit('show:LyricModal', lyric)
+          Event.$emit('show:LyricModal', item)
           this.loadingHandler()
         } else {
           alert('lyrics not found')
@@ -77,11 +101,32 @@ export default {
     loadingHandler: function () {
       this.isLoading = !this.isLoading
     },
-    // loginSpotify: function () {
-    //   window.href(
-        
-    //   )
-    // }
+    loginSpotify: function () {
+      window.location = 'http://localhost:3000/api/spotify/login'
+    },
+    getCurrentPlayback: async function () {
+      spotify.setAccessToken(this.token.access_token)
+      try {
+        const response = await spotify.getMyCurrentPlaybackState()
+        this.artist = response.body.item.artists[0].name
+        this.title = response.body.item.name
+        this.albumCover = response.body.item.album.images[0].url
+        this.albumName = response.body.item.album.name
+        this.releaseDate = response.body.item.album.release_date
+        await this.find()
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    getHashParams: function () {
+      let hashParams = {};
+      let e, r = /([^&;=]+)=?([^&;]*)/g,
+          q = window.location.hash.substring(1);
+      while ( e = r.exec(q)) {
+          hashParams[e[1]] = decodeURIComponent(e[2]);
+      }
+      return hashParams;
+    }
   }
 }
 </script>
@@ -101,5 +146,9 @@ export default {
 }
 .uk-logo img {
     height: 28px;
+}
+.spotify-button {
+  background-color: #1db954;
+  color: #191414;
 }
 </style>

@@ -11,6 +11,7 @@
     "core-js": "^3.3.2",
     "lyric-get": "^1.0.3",
     "register-service-worker": "^1.6.2",
+    "spotify-web-api-node": "^4.0.0",
     "uikit": "^3.2.3",
     "vue": "^2.6.10",
     "vue-loading-overlay": "^3.2.0",
