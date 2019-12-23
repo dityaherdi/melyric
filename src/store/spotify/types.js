@@ -1,1 +1,1 @@
-export const EXAMPLE = 'EXAMPLE'
+export const SPOTIFY_USER_LOGIN = 'SPOTIFY_USER_LOGIN'

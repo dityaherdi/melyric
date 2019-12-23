@@ -1,9 +1,9 @@
 const state = {
-  // Spotify user
-  user: null,
-  isLoggedIn: !!user
+  // Spotify User
+  spotifyUser: null,
 
-  // Spotify state
+  // Spotify State
+  song: null
 }
 
 export default state

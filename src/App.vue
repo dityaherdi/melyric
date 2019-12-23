@@ -26,7 +26,7 @@
               Login with Spotify to get instant lyric.
             </button>
           </div>
-          <button @click="getCurrentPlayback">Get Current Playback</button>
+          <!-- <button @click="getCurrentPlayback">Get Current Playback</button> -->
 				</div>
 			</div>
 			</div>
@@ -47,6 +47,9 @@ import lyric from 'lyric-get'
 import axios from 'axios'
 import Event from './helpers/event'
 import Loading from 'vue-loading-overlay'
+import { mapActions } from 'vuex'
+import { extractSpotifyToken } from './helpers/utilities'
+
 import spotifyAPI from 'spotify-web-api-node'
 const spotify = new spotifyAPI()
 
@@ -57,7 +60,6 @@ export default {
       title: null,
       isLoading: false,
       me: null,
-      token: null,
       albumCover: null,
       albumName: null,
       releaseDate: null
@@ -71,9 +73,17 @@ export default {
     Loading
   },
   mounted() {
-    this.token = this.getHashParams()
+    const token = extractSpotifyToken()
+    if (token !== null) {
+      if (window.opener !== null) {
+        window.opener.spotifyCallback(token)
+      }
+    }
   },
   methods: {
+    ...mapActions([
+      'loginSpotify'
+    ]),
     find: async function () {
       this.loadingHandler()
       try {
@@ -101,32 +111,20 @@ export default {
     loadingHandler: function () {
       this.isLoading = !this.isLoading
     },
-    loginSpotify: function () {
-      window.location = 'http://localhost:3000/api/spotify/login'
-    },
-    getCurrentPlayback: async function () {
-      spotify.setAccessToken(this.token.access_token)
-      try {
-        const response = await spotify.getMyCurrentPlaybackState()
-        this.artist = response.body.item.artists[0].name
-        this.title = response.body.item.name
-        this.albumCover = response.body.item.album.images[0].url
-        this.albumName = response.body.item.album.name
-        this.releaseDate = response.body.item.album.release_date
-        await this.find()
-      } catch (error) {
-        console.log(error)
-      }
-    },
-    getHashParams: function () {
-      let hashParams = {};
-      let e, r = /([^&;=]+)=?([^&;]*)/g,
-          q = window.location.hash.substring(1);
-      while ( e = r.exec(q)) {
-          hashParams[e[1]] = decodeURIComponent(e[2]);
-      }
-      return hashParams;
-    }
+    // getCurrentPlayback: async function () {
+    //   spotify.setAccessToken(JSON.parse(localStorage.getItem('spotifyUserAccessToken')))
+    //   try {
+    //     const response = await spotify.getMyCurrentPlaybackState()
+    //     this.artist = response.body.item.artists[0].name
+    //     this.title = response.body.item.name
+    //     this.albumCover = response.body.item.album.images[0].url
+    //     this.albumName = response.body.item.album.name
+    //     this.releaseDate = response.body.item.album.release_date
+    //     await this.find()
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+    // }
   }
 }
 </script>
